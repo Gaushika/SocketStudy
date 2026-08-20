@@ -59,22 +59,24 @@ Socket programming finds applications in various domains, including web developm
 ```
 import socket
 
-s = socket.socket()
-s.bind(('localhost', 8000))
-s.listen(5)
-c, addr = s.accept()
+# Create socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-while True:
-    i = input("Enter a data: ")
-    c.send(i.encode())
-    ack = c.recv(1024).decode()
-    if ack:
-        print(ack)
-        continue
-    else:
-        c.close()
-        break
+# Connect to server
+host = '127.0.0.1'
+port = 12345
+client_socket.connect((host, port))
 
+# Send message to server
+message = "Hello Server!"
+client_socket.send(message.encode())
+
+# Receive response from server
+data = client_socket.recv(1024).decode()
+print("Server says:", data)
+
+# Close socket
+client_socket.close()
 ```
 
 Server:
@@ -82,17 +84,37 @@ Server:
 ```
 import socket
 
-s = socket.socket()
-s.connect(('localhost', 8000))
+# Create socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-while True:
-    print(s.recv(1024).decode())
-    s.send("Acknowledgement Received".encode())
+# Bind socket to IP and port
+host = '127.0.0.1'
+port = 12345
+server_socket.bind((host, port))
 
+# Listen for connections
+server_socket.listen(1)
+print("Server is waiting for connection...")
+
+# Accept client connection
+conn, addr = server_socket.accept()
+print("Connected to:", addr)
+
+# Receive data from client
+data = conn.recv(1024).decode()
+print("Client says:", data)
+
+# Send response to client
+message = "Hello Client, message received!"
+conn.send(message.encode())
+
+# Close connection
+conn.close()
+server_socket.close()
 ```
 
 ## Output
-<img width="1917" height="1027" alt="image" src="https://github.com/user-attachments/assets/df9cf868-2a2f-490f-a1f5-7fe06ba20f45" />
+<img width="1916" height="1015" alt="image" src="https://github.com/user-attachments/assets/37fb9e90-0987-4372-b5d6-533556166e98" />
 
 
 ## Result:
